@@ -44,4 +44,50 @@ describe "User Pages" do
 		it { should have_selector('h1', text: user.name) }
 		it { should have_selector('title', text: user.name) }
 	end
+
+	describe "edit page" do
+		let(:user) { FactoryGirl.create(:user) }
+		before do
+			sign_in user
+		 	visit edit_user_path(user)
+		end
+
+		describe "page" do
+			it { should have_selector('h1', text: "Update") }
+			it { should have_selector('title', text: full_title('Update')) }
+			it { should have_link('Change', href: 'http://gravatar.com/emails') }
+		end
+
+		describe "with invalid information" do
+			before { click_button 'Save Changes' }
+
+			it { should have_content('error') }
+		end
+
+		describe "with valid information" do
+			let(:new_name) { "New Name" }
+			let(:new_email) { "new@example.com" }
+
+			# fill in form with new name & email, but same password
+			before do
+				fill_in "Name", with: new_name
+				fill_in "Email", with: new_email
+				fill_in "Password", with: user.password
+				fill_in "Confirmation", with: user.password
+			 	click_button "Save Changes"
+			end
+
+			# goes to the user's profile page, where it should:
+
+			# have a success message
+			it { should have_selector('div.alert.alert-success') }
+			# have the users new name in the title
+			it { should have_selector('title', text: new_name) }
+			# have a sign out link
+			it { should have_link('Sign out', href: signout_path) }
+			# reloading user info from the database should verify new name & email
+			specify { user.reload.name.should == new_name }
+			specify { user.reload.email.should == new_email }
+		end
+	end
 end
