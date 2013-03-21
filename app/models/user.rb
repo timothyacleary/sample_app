@@ -13,8 +13,11 @@ class User < ActiveRecord::Base
   # let the app CRUD these variables
   attr_accessible :email, :name, :password, :password_confirmation
 
+
   # run the BCrypt secure password method
   has_secure_password
+
+    has_many :microposts, dependent: :destroy
 
   # before the user is saved, do these things
   before_save { |user| user.email.downcase! }
@@ -27,6 +30,8 @@ class User < ActiveRecord::Base
   			uniqueness: { case_sensitive: false }
   validates :password, presence: true, length: { minimum: 6 }
   validates :password_confirmation, presence: true
+
+
 
   # don't let anyone access these methods from outside the app
   private 
