@@ -6,6 +6,10 @@ describe "Authentication" do
   describe "signin" do
   	before { visit signin_path }
 
+    it { should_not have_link('Users') }
+    it { should_not have_link('Profile') }
+    it { should_not have_link('Settings') }
+
   	describe "with invalid information" do
   		before { click_button "Sign in" }
 
@@ -105,6 +109,21 @@ describe "Authentication" do
 
       describe "attempting to send DELETE to User#path" do
         before { delete user_path(user) }
+        specify { response.should redirect_to(root_path) }
+      end
+    end
+
+    describe "as signed in user" do
+      let(:user) { FactoryGirl.create(:user) }
+      before { sign_in user }
+
+      describe "using 'new' action" do
+        before { get new_user_path }
+        specify { response.should redirect_to(root_path) }
+      end
+
+      describe "using 'create' action" do
+        before { post users_path }
         specify { response.should redirect_to(root_path) }
       end
     end
