@@ -1,8 +1,9 @@
 class UsersController < ApplicationController
 
   # before filters run methods defined in user_helpers for certain User methods
-  before_filter :signed_in_user, only: [:edit, :update]
+  before_filter :signed_in_user, only: [:index, :edit, :update, :destroy]
   before_filter :correct_user, only: [:edit, :update]
+  before_filter :admin_user, only: [:destroy]
 
   def show
   	@user = User.find(params[:id])
@@ -36,10 +37,25 @@ class UsersController < ApplicationController
     end
   end
 
+  def index
+    @users = User.paginate(page: params[:page])
+  end
+
+  def destroy
+    User.find(params[:id]).destroy
+    flash[:success] = "User deleted"
+    redirect_to users_url
+  end
+
   private
 
     def signed_in_user
-      redirect_to signin_url, notice: "Please sign in." unless signed_in?
+      unless signed_in?
+        # stores attempted url
+        store_location
+        # sends to sign in page
+        redirect_to signin_url, notice: "Please sign in."
+      end
     end
 
     def correct_user
@@ -48,5 +64,10 @@ class UsersController < ApplicationController
 
       # send to the root page unless they are the current user
       redirect_to(root_path) unless current_user?(@user)
+    end
+
+    def admin_user
+      # redirect to root unles current user is an admin
+      redirect_to(root_path) unless current_user.admin?
     end
 end
