@@ -18,8 +18,26 @@ module SessionsHelper
 		@current_user ||= User.find_by_remember_token(cookies[:remember_token])
 	end
 
+	# checks to see if the user reference is the same as the logged in user
+	def current_user?(user)
+		user == current_user
+	end
+
+
 	def sign_out
 		self.current_user = nil
 		cookies.delete(:remember_token)
+	end
+
+
+	# redirects to the stored url or the given url, then clears the stored url
+	def redirect_back_or(default)
+		redirect_to(session[:return_to] || default)
+		session.delete(:return_to)
+	end
+
+	#stores the requested url in a session variable
+	def store_location
+		session[:return_to] = request.url
 	end
 end
