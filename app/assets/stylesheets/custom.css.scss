@@ -195,10 +195,12 @@ input {
   margin: 10px 0 0 0;
 
   li {
-    padding: 10px 0;
+    padding: 10px 0 10px 0;
     border-top: 1px solid #e8e8e8;
+    //clear: both;
   }
 }
+
 .content {
   display: block;
 }
@@ -209,6 +211,7 @@ input {
   float: left;
   margin-right: 10px;
 }
+
 aside {
   textarea {
     height: 100px;

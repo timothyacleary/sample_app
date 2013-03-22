@@ -51,15 +51,6 @@ class UsersController < ApplicationController
 
   private
 
-    def signed_in_user
-      unless signed_in?
-        # stores attempted url
-        store_location
-        # sends to sign in page
-        redirect_to signin_url, notice: "Please sign in."
-      end
-    end
-
     def correct_user
       # pull in the user info from the database
       @user = User.find(params[:id])

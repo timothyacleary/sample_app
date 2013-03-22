@@ -23,6 +23,14 @@ module SessionsHelper
 		user == current_user
 	end
 
+	def signed_in_user
+      unless signed_in?
+        # stores attempted url
+        store_location
+        # sends to sign in page
+        redirect_to signin_url, notice: "Please sign in."
+      end
+    end
 
 	def sign_out
 		self.current_user = nil
@@ -40,4 +48,6 @@ module SessionsHelper
 	def store_location
 		session[:return_to] = request.url
 	end
+
+
 end
