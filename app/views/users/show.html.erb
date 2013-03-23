@@ -7,6 +7,14 @@
         <%= @user.name %>
       </h1>
     </section>
+    <section>
+      <%= render 'shared/stats' %>
+    </section>
+    <% if signed_in? %>
+    <section>
+      <%= render 'follow_form' %>
+    </section>
+    <% end %>
   </aside>
   <div class="span8">
   	<h3>Microposts (<%= @user.microposts.count %>)</h3>
